@@ -1,0 +1,25 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env
+
+# Mac system files
+.DS_Store
+
+# FAISS and cached files
+faiss_store/
+*.index
+
+# Uploaded PDFs
+data/uploaded_docs/
+
+# Ollama model cache
+ollama_model_cache/
+
+# VS Code config
+.vscode/
