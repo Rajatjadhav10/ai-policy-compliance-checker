@@ -24,6 +24,10 @@ async def upload_pdf(file: UploadFile = File(...)):
     text = extract_text_from_pdf(file.file)
     chunks = chunk_text(text)
 
+    if not chunks:
+        raise HTTPException(status_code=400, detail="No chunks could be extracted from the document")
+
+
     
 
     # 4. Embed chunks
@@ -37,9 +41,17 @@ async def upload_pdf(file: UploadFile = File(...)):
     vectorstore = VectorStore(dimension)
     vectorstore.add_embeddings(embeddings)
 
+    # Save FAISS index
+    
+
+
     # 6. Save metadata in MongoDB
     document_id = save_document_metadata(file.filename, len(chunks))
     pdf_path = os.path.join(UPLOAD_DIR, f"{document_id}.pdf")
+
+    index_path = os.path.join("faiss_store", f"{document_id}.index")
+    vectorstore.index_path = index_path
+    vectorstore.save()
 
     # 5. Save the PDF file to disk
     with open(pdf_path, "wb") as f:

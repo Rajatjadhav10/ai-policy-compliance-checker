@@ -24,6 +24,13 @@ def ask_question(payload: AskRequest):
     if not os.path.exists(pdf_path):
         raise HTTPException(status_code=404, detail="PDF file not found")
 
+    index_path = os.path.join("faiss_store", f"{payload.document_id}.index")
+    dimension = 384  
+    vectorstore = VectorStore(dimension, index_path=index_path)
+
+# If index doesn't exist, return error
+    if not os.path.exists(index_path):
+        raise HTTPException(status_code=404, detail="Vector index not found. Please upload the document first.")
     # 1. Re-extract and chunk
     text = extract_text_from_pdf(pdf_path)
     chunks = chunk_text(text)
